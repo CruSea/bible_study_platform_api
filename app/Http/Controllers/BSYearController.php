@@ -7,9 +7,8 @@ use App\Category;
 use Validator;
 use Illuminate\Http\Request;
 use Mockery\Exception;
-use Excel;
 
-class BSYearController extends Controller
+class BSYearController extends MainController
 {
     //
     /**

@@ -23,7 +23,7 @@ class CreateMembersTable extends Migration
             $table->string('region')->nullable();
             $table->string('city')->nullable();
             $table->string('school')->nullable();
-            $table->string('field')->nullable();
+            $table->string('stream')->nullable();
             $table->integer('is_confirmed')->nullable()->default(0);
             $table->timestamps();
 

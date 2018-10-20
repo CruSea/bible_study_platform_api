@@ -2,15 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Attendant;
-use App\AttendantExports;
 use App\BibleStudy;
 use Validator;
 use Illuminate\Http\Request;
 use Mockery\Exception;
-use Excel;
 
-class BibleStudyController extends Controller
+class BibleStudyController extends MainController
 {
     //
 

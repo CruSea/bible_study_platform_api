@@ -6,9 +6,8 @@ use App\Category;
 use Validator;
 use Illuminate\Http\Request;
 use Mockery\Exception;
-use Excel;
 
-class CategoryController extends Controller
+class CategoryController extends MainController
 {
     //
     /**
