@@ -4,7 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class BibelStudy extends Model
+class BibleStudy extends Model
 {
     //
 }

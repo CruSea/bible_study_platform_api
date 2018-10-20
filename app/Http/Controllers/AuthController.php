@@ -33,7 +33,6 @@ class AuthController extends MainController
         try {
             $pages = request()->only('len');
             $per_page = $pages != null ? (int)$pages['len'] : 10;
-
             if ($per_page > 50) {
                 return response()->json(['success' => false, 'error' => 'Maximum page length is 50.'], 401);
             }

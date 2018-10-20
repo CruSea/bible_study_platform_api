@@ -10,7 +10,7 @@ use Mockery\Exception;
 use Excel;
 
 /**
- * Class AttendantController
+ * Class Controller
  * @package App\Http\Controllers
  */
 class AttendantController extends MainController
