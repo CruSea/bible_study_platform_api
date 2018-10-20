@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\BibleStudy;
 use App\Member;
 use Validator;
 use Illuminate\Http\Request;

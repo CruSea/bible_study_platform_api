@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 
 class ReportController extends MainController
 {
+
     /**
      * AttendantController constructor.
      */
