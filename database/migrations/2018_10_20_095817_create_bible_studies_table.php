@@ -20,13 +20,13 @@ class CreateBibleStudiesTable extends Migration
             $table->integer('category_id')->unsigned()->nullable();
             $table->integer('year_id')->unsigned()->nullable();
             $table->string('bs_name')->nullable();
-            $table->string('title')->nullable();
-            $table->string('aim')->nullable();  //M for male or F for female
-            $table->string('verse')->nullable();
-            $table->string('question')->nullable();
-            $table->string('remark')->nullable();
-            $table->string('further_info')->nullable();
-            $table->string('tags')->nullable();
+            $table->text('title')->nullable();
+            $table->text('aim')->nullable();  //M for male or F for female
+            $table->text('verse')->nullable();
+            $table->text('question')->nullable();
+            $table->text('remark')->nullable();
+            $table->text('further_info')->nullable();
+            $table->text('tags')->nullable();
             $table->timestamps();
         });
 

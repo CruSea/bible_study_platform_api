@@ -90,13 +90,53 @@ class BibleStudyController extends Controller
             );
 
             $category_id = $credentials['category_id'];
-            $categories =BibleStudy::where('id', '=', "%$category_id%")
+            $categories = BibleStudy::where('id', '=', "%$category_id%")
                 ->orderBy('id', 'desc')
                 ->paginate($per_page);
 
             return response()->json(['success' => true, 'result' => $categories], 200);
+        } catch (Exception $e) {
+            return response()->json(['success' => false, 'error' => 'Invalid credential used!!'], 401);
+        }
+    }
 
 
+    public function browseByYearAndTerm(){
+        try {
+
+            $rules = [
+                'term' => 'max:30 |required',
+                'year_id' => 'max:30 |required |min:9'
+            ];
+
+            $credentials = request()->only(
+                'term', 'year_id'
+            );
+
+            $validator = Validator::make($credentials, $rules);
+
+            if ($validator->fails()) {
+                $error = $validator->messages();
+                return response()->json(['status' => false, 'error' => $error], 400);
+            }
+
+
+            $pages = request()->only('len');
+            $per_page = $pages != null ? (int)$pages['len'] : 10;
+
+            if ($per_page > 50) {
+                return response()->json(['success' => false, 'error' => 'Maximum page length is 50.'], 401);
+            }
+
+
+            $year_id = $credentials['year_id'];
+            $term = $credentials['term'];
+            $bs = BibleStudy::where('category_id', '=', "$year_id")
+                ->where('term', '=', $term)
+                ->orderBy('id', 'desc')
+                ->paginate($per_page);
+
+            return response()->json(['success' => true, 'result' => $bs], 200);
         } catch (Exception $e) {
             return response()->json(['success' => false, 'error' => 'Invalid credential used!!'], 401);
         }
@@ -110,13 +150,13 @@ class BibleStudyController extends Controller
     public function create(Request $request)
     {
         $rules = [
-            'full_name' => 'max:255 |required',
-            'phone' => 'max:13 |required |min:9',
-            'sex' => 'max:1',
+            'bs_id' => 'max:255 |required',
+            'term' => 'max:2 |required |min:1',
+            'title' => 'required'
         ];
 
         $credentials = $request->only(
-            'full_name', 'phone', 'email', 'age', 'sex', 'region', 'city', 'profession', 'interest', 'conference_year', 'conference_place'
+            'bs_id', 'term', 'category_id', 'year_id', 'bs_name', 'title', 'aim', 'verse', 'question', 'remark', 'further_info', 'tags'
         );
 
         $validator = Validator::make($credentials, $rules);
@@ -126,38 +166,28 @@ class BibleStudyController extends Controller
             return response()->json(['status' => false, 'error' => $error], 400);
         }
 
-        $phone = $credentials['phone'];
-        $phone = substr($phone,strlen($phone)-9,9);
-        $phone = "251" . $phone;
+        $new_item = new BibleStudy();
+        $new_item->bs_id =  isset($credentials['bs_id']) ? $credentials['bs_id'] : null;
+        $new_item->term =  isset($credentials['term']) ? $credentials['term'] : "";
+        $new_item->category_id =  isset($credentials['category_id']) ? $credentials['category_id'] : null;
+        $new_item->year_id =  isset($credentials['year_id']) ? $credentials['year_id'] : null;
+        $new_item->bs_name =  isset($credentials['bs_name']) ? $credentials['bs_name'] : null;
+        $new_item->title =  isset($credentials['title']) ? $credentials['title'] : null;
+        $new_item->aim =  isset($credentials['aim']) ? $credentials['aim'] : null;
+        $new_item->verse =  isset($credentials['verse']) ? $credentials['verse'] : null;
+        $new_item->question =  isset($credentials['question']) ? $credentials['question'] : null;
+        $new_item->remark =  isset($credentials['remark']) ? $credentials['remark'] : null;
+        $new_item->further_info =  isset($credentials['further_info']) ? $credentials['further_info'] : null;
+        $new_item->tags =  isset($credentials['tags']) ? $credentials['tags'] : null;
 
-        $new_attendant = new Attendant();
-        $new_attendant->full_name =  isset($credentials['full_name']) ? $credentials['full_name'] : "";
-        $new_attendant->phone =  $phone;
-        $new_attendant->email =  isset($credentials['email']) ? $credentials['email'] : null;
-        $new_attendant->age =  isset($credentials['age']) ? $credentials['age'] : null;
-        $new_attendant->sex =  isset($credentials['sex']) ? $credentials['sex'] : null;
-        $new_attendant->region =  isset($credentials['region']) ? $credentials['region'] : null;
-        $new_attendant->city =  isset($credentials['city']) ? $credentials['city'] : null;
-        $new_attendant->profession =  isset($credentials['profession']) ? $credentials['profession'] : null;
-        $new_attendant->interest =  isset($credentials['interest']) ? $credentials['interest'] : null;
-        $new_attendant->conference_year =  isset($credentials['conference_year']) ? $credentials['conference_year'] : null;
-        $new_attendant->conference_place =  isset($credentials['conference_place']) ? $credentials['conference_place'] : null;
-
-        $state = $new_attendant->save();
+        $state = $new_item->save();
         if($state){
-            $message = "Dear " . $new_attendant->full_name .
-                ", Thank you for registering for the 2018 Indigitous #Hack which takes place in Addis Ababa, Gurid Shola, Holy City center from October 19 - 21, 2018."
-                . " \n \n See Holy City Center ( https://maps.app.goo.gl/i/dUpo8 ) in Google Maps.";
-            $this->addToGroup($new_attendant->full_name, $new_attendant->phone, $new_attendant->email);
-            $this->sendMessage($message, $new_attendant->phone);
-
-            return response()->json(["success" => true, "result"=>$new_attendant]);
+            return response()->json(["success" => true, "result"=>$new_item]);
         }
         else{
             return response()->json(["success" => false, "error"=>"Something went wrong. Please try again"]);
         }
     }
-
 
 
     /**
@@ -166,11 +196,11 @@ class BibleStudyController extends Controller
      */
     public function show($id)
     {
-        $user = Attendant::where('id', '=', $id)->first();
-        if(!$user){
-            return response()->json(["success" => false, "error"=>"User not found"], 400);
+        $item = BibleStudy::where('id', '=', $id)->first();
+        if(!$item){
+            return response()->json(["success" => false, "error"=>"Item not found"], 400);
         }
-        return response()->json(["success" => true, "result"=>$user]);
+        return response()->json(["success" => true, "result"=>$item]);
     }
 
     /**
@@ -179,13 +209,13 @@ class BibleStudyController extends Controller
      */
     public function delete($id)
     {
-        $attendant = Attendant::find($id);
-        if(! $attendant){
-            return response()->json(['status'=>false,'error'=> "Attendant not found"], 400);
+        $item = BibleStudy::find($id);
+        if(! $item){
+            return response()->json(['status'=>false,'error'=> "Item not found"], 400);
         }
 
-        $attendant->delete();
-        return response()->json(["success" => true, "result"=>$attendant]);
+        $item->delete();
+        return response()->json(["success" => true, "result"=>$item]);
     }
 
 
@@ -196,20 +226,20 @@ class BibleStudyController extends Controller
      */
     public function edit(Request $request, $id){
 
-        $user = Attendant::find($id);
+        $item = BibleStudy::find($id);
 
-        if(!$user){
-            return response()->json(['status'=>false,'error'=> "User not found"]);
+        if(!$item){
+            return response()->json(['status'=>false,'error'=> "Item not found"]);
         }
 
         $rules = [
-            'full_name' => 'max:255 |required',
-            'phone' => 'max:13 |required |min:9',
-            'sex' => 'max:1',
+            'bs_id' => 'max:255 |required',
+            'term' => 'max:2 |required |min:1',
+            'title' => 'required'
         ];
 
         $credentials = $request->only(
-            'full_name', 'phone', 'email', 'age', 'sex', 'region', 'city', 'profession', 'academic_status'
+            'bs_id', 'term', 'category_id', 'year_id', 'bs_name', 'title', 'aim', 'verse', 'question', 'remark', 'further_info', 'tags'
         );
 
         $validator = Validator::make($credentials, $rules);
@@ -219,24 +249,20 @@ class BibleStudyController extends Controller
             return response()->json(['status' => false, 'error' => $error], 400);
         }
 
-        $user->full_name =  isset($credentials['full_name']) ? $credentials['full_name'] : "";
-        $user->phone =  isset($credentials['phone']) ? $credentials['phone'] : "";
-        $user->email =  isset($credentials['email']) ? $credentials['email'] : "";
-        $user->age =  isset($credentials['age']) ? $credentials['age'] : "";
-        $user->sex =  isset($credentials['sex']) ? $credentials['sex'] : "";
-        $user->region =  isset($credentials['region']) ? $credentials['region'] : "";
-        $user->city =  isset($credentials['city']) ? $credentials['city'] : "";
-        $user->profession =  isset($credentials['profession']) ? $credentials['profession'] : "";
-        $user->academic_status =  isset($credentials['academic_status']) ? $credentials['academic_status'] : "";
+        $item->bs_id =  isset($credentials['bs_id']) ? $credentials['bs_id'] : null;
+        $item->term =  isset($credentials['term']) ? $credentials['term'] : "";
+        $item->category_id =  isset($credentials['category_id']) ? $credentials['category_id'] : null;
+        $item->year_id =  isset($credentials['year_id']) ? $credentials['year_id'] : null;
+        $item->bs_name =  isset($credentials['bs_name']) ? $credentials['bs_name'] : null;
+        $item->title =  isset($credentials['title']) ? $credentials['title'] : null;
+        $item->aim =  isset($credentials['aim']) ? $credentials['aim'] : null;
+        $item->verse =  isset($credentials['verse']) ? $credentials['verse'] : null;
+        $item->question =  isset($credentials['question']) ? $credentials['question'] : null;
+        $item->remark =  isset($credentials['remark']) ? $credentials['remark'] : null;
+        $item->further_info =  isset($credentials['further_info']) ? $credentials['further_info'] : null;
+        $item->tags =  isset($credentials['tags']) ? $credentials['tags'] : null;
 
-        $user->update();
-        return response()->json(["success" => true, "result"=>$user]);
-    }
-
-
-
-    public function exportAll()
-    {
-        return Excel::download(new AttendantExports(), 'attendant.xlsx');
+        $item->update();
+        return response()->json(["success" => true, "result"=>$item]);
     }
 }
