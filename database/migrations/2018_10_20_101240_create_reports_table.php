@@ -17,8 +17,9 @@ class CreateReportsTable extends Migration
             $table->increments('id');
             $table->integer('bs_id')->unsigned()->nullable();
             $table->integer('member_id')->unsigned()->nullable();
-            $table->dateTime('date')->nullable();
+            $table->dateTime('bs_time')->nullable();
             $table->string('full_name')->nullable();
+            $table->string('leader_name')->nullable();
             $table->string('imei')->nullable();
             $table->string('city')->nullable();
             $table->string('school')->nullable();

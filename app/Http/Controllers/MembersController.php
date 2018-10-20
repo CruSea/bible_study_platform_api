@@ -15,7 +15,7 @@ class MembersController extends MainController
     //
 
     /**
-     * AttendantController constructor.
+     * MembersController constructor.
      */
     public function __construct()
     {

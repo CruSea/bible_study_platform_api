@@ -12,7 +12,7 @@ class BibleStudyController extends MainController
     //
 
     /**
-     * AttendantController constructor.
+     * BibleStudyController constructor.
      */
     public function __construct()
     {
