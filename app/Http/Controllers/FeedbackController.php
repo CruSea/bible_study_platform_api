@@ -43,9 +43,6 @@ class FeedbackController extends Controller
         }
     }
 
-$table->integer('member_id')->unsigned()->nullable();
-$table->string('feedback')->nullable();
-
     /**
      * Register new Attendant
      *

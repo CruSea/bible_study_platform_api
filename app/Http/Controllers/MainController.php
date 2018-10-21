@@ -2,17 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Setting;
 use App\SMSLog;
-use App\SMSPorts;
 use App\User;
-use App\UserQR;
-use Carbon\Carbon;
-use Illuminate\Http\Request;
-use Mockery\Exception;
 use Validator;
 use JWTAuth;
-use App\UserRole;
 use Monolog\Logger;
 
 /**

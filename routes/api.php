@@ -48,18 +48,102 @@ Route::get('/roles', ['uses'=>'RolesController@index']);
 
 /**
 |----------------------------------------------------------------------------------------------------------------------------------------------------
-| Attendants Controller API Routes
+| Bible Study Controller API Routes
 |----------------------------------------------------------------------------------------------------------------------------------------------------
 |
-| Hackathon attendants registration
+| bible study
 |
  */
 
-Route::get('/attendant', ['uses'=>'AttendantController@index']);
-Route::post('/attendant', ['uses'=>'AttendantController@create']);
-Route::get('/attendant/export', ['uses'=>'AttendantController@exportAll']);
-Route::get('/attendant/search', ['uses'=>'AttendantController@search']);
-Route::get('/attendant/{id}', ['uses'=>'AttendantController@show']);
-Route::delete('/attendant/{id}', ['uses'=>'AttendantController@delete']);
+Route::get('/bs', ['uses'=>'BibleStudyController@index']);
+Route::post('/bs', ['uses'=>'BibleStudyController@create']);
+Route::get('/bs/search', ['uses'=>'BibleStudyController@search']);
+Route::get('/bs/{id}', ['uses'=>'BibleStudyController@show']);
+Route::delete('/bs/{id}', ['uses'=>'BibleStudyController@delete']);
+Route::post('/bs/browse', ['uses'=>'BibleStudyController@browseByYearAndTerm']);
+Route::post('/bs/year/{id}', ['uses'=>'BibleStudyController@browseByYear']);
+Route::get('/bs/category/{id}', ['uses'=>'BibleStudyController@browseByCategory']);
 
 
+
+
+/**
+|----------------------------------------------------------------------------------------------------------------------------------------------------
+| Bible Study Year Controller API Routes
+|----------------------------------------------------------------------------------------------------------------------------------------------------
+|
+| YEAR
+|
+ */
+
+Route::get('/year', ['uses'=>'BSYearController@index']);
+Route::post('/year', ['uses'=>'BSYearController@create']);
+Route::get('/year/all', ['uses'=>'BSYearController@all']);
+Route::get('/year/{id}', ['uses'=>'BSYearController@show']);
+Route::delete('/year/{id}', ['uses'=>'BSYearController@delete']);
+
+
+
+
+/**
+|----------------------------------------------------------------------------------------------------------------------------------------------------
+| Categories Controller API Routes
+|----------------------------------------------------------------------------------------------------------------------------------------------------
+|
+| Categories
+|
+ */
+
+Route::get('/category', ['uses'=>'CategoryController@index']);
+Route::post('/category', ['uses'=>'CategoryController@create']);
+Route::get('/category/all', ['uses'=>'CategoryController@all']);
+Route::get('/category/{id}', ['uses'=>'CategoryController@show']);
+Route::delete('/category/{id}', ['uses'=>'CategoryController@delete']);
+
+
+/**
+|----------------------------------------------------------------------------------------------------------------------------------------------------
+| Feed Back Controller API Routes
+|----------------------------------------------------------------------------------------------------------------------------------------------------
+|
+| Feed back
+|
+ */
+
+Route::get('/feedback', ['uses'=>'FeedbackController@index']);
+Route::post('/feedback', ['uses'=>'FeedbackController@create']);
+Route::get('/feedback/{id}', ['uses'=>'FeedbackController@show']);
+Route::delete('/feedback/{id}', ['uses'=>'FeedbackController@delete']);
+
+
+
+/**
+|----------------------------------------------------------------------------------------------------------------------------------------------------
+| Members Controller API Routes
+|----------------------------------------------------------------------------------------------------------------------------------------------------
+|
+| Feed back
+|
+ */
+
+Route::get('/member', ['uses'=>'MembersController@index']);
+Route::post('/member', ['uses'=>'MembersController@create']);
+Route::get('/member/{id}', ['uses'=>'MembersController@show']);
+Route::delete('/member/{id}', ['uses'=>'MembersController@delete']);
+
+
+
+
+/**
+|----------------------------------------------------------------------------------------------------------------------------------------------------
+| Report Controller API Routes
+|----------------------------------------------------------------------------------------------------------------------------------------------------
+|
+| report
+|
+ */
+
+Route::get('/report', ['uses'=>'ReportController@index']);
+Route::post('/report', ['uses'=>'ReportController@create']);
+Route::get('/report/{id}', ['uses'=>'ReportController@show']);
+Route::delete('/report/{id}', ['uses'=>'ReportController@delete']);

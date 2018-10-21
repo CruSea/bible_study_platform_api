@@ -32,7 +32,7 @@ class BibleStudyController extends MainController
                 return response()->json(['success' => false, 'error' => 'Maximum page length is 50.'], 401);
             }
 
-            $users = BibleStudy::orderBy('id', 'desc')
+            $users = BibleStudy::orderBy('id', 'desc')->with('year')->with('category')
                 ->paginate($per_page);
 
             return response()->json(['success' => true, 'result' => $users], 200);
@@ -87,7 +87,7 @@ class BibleStudyController extends MainController
             );
 
             $category_id = $credentials['category_id'];
-            $categories = BibleStudy::where('id', '=', "%$category_id%")
+            $categories = BibleStudy::where('category_id', '=', "%$category_id%")
                 ->orderBy('id', 'desc')
                 ->paginate($per_page);
 
@@ -98,9 +98,32 @@ class BibleStudyController extends MainController
     }
 
 
+    public function browseByYear($id){
+        try {
+            $pages = request()->only('len');
+            $per_page = $pages != null ? (int)$pages['len'] : 10;
+
+            if ($per_page > 50) {
+                return response()->json(['success' => false, 'error' => 'Maximum page length is 50.'], 401);
+            }
+
+            $credentials = request()->only(
+                'year_id'
+            );
+
+            $category_id = $credentials['year_id'];
+            $categories = BibleStudy::where('year_id', '=', "%$category_id%")
+                ->orderBy('id', 'desc')
+                ->paginate($per_page);
+
+            return response()->json(['success' => true, 'result' => $categories], 200);
+        } catch (Exception $e) {
+            return response()->json(['success' => false, 'error' => 'Invalid credential used!!'], 401);
+        }
+    }
+
     public function browseByYearAndTerm(){
         try {
-
             $rules = [
                 'term' => 'max:30 |required',
                 'year_id' => 'max:30 |required |min:9'

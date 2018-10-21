@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Member;
 use App\Report;
 use Illuminate\Http\Request;
+use Mockery\Exception;
 
 class ReportController extends MainController
 {

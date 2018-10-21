@@ -27,17 +27,8 @@ class User extends Authenticatable
         'password', 'remember_token',
     ];
 
-    public function qrImage()
-    {
-        return $this->hasOne('App\UserQR', 'user_id');
-    }
 
-    public function attendant()
-    {
-        return $this->hasOne('App\Attendant', 'user_id');
-    }
-
-    public function roles()
+    public function role()
     {
         return $this->hasOne('App\UserRole', 'id', 'role_id');
     }
